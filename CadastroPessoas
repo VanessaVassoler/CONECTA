@@ -1,0 +1,141 @@
+from tkinter import *
+from PIL import ImageTk,Image
+import sqlite3
+
+janela = Tk()
+janela.title('Doações Casa de Apoio Betânia')
+janela.geometry("400x600")
+
+#Banco de Dados
+
+#Criando DB
+conn = sqlite3.connect('C:\\Users\\Thomas\\Desktop\\THOMAS\\python\\doacao_CAB.db')
+
+#Criando cursor
+c = conn.cursor()
+
+#Criar tabela
+
+c.execute('CREATE TABLE IF NOT EXISTS doações1( nome TEXT, end TEXT, cidade TEXT  '\
+          'rg_cpf INTEGER, data_in TEXT, data_des TEXT, pac VARCHAR(250), obs1 VARCHAR(250), obs2 VARCHAR(250))')
+
+#Criando função salvar
+
+def salvar():
+  
+    #conectar no bd
+    conn = sqlite3.connect('C:\\Users\\Thomas\\Desktop\\THOMAS\\python\\doacao_CAB.db')
+    c = conn.cursor()
+    #inserir dados na tabela
+    c.execute("INSERT INTO doações2 VALUES (:nome, :end, :cidade, :rg_cpf, :data_nasc, :data_in, :data_des, :pac, :resp, :obs1, :obs2)",
+             {
+                  'nome': nome.get(),
+                  'end': end.get(),
+                  'cidade': cidade.get(),
+                  'rg_cpf': rg_cpf.get(),
+                  'data_nasc': data_nasc.get(),
+                  'data_in': data_in.get(),
+                  'data_des': data_des.get(),
+                  'pac': pac.get(),
+                  'resp': resp.get(),
+                  'obs1': obs1.get(),
+                  'obs2': obs2.get()
+             })
+    #limpar caixas
+    nome.delete(0, END)
+    end.delete(0, END)
+    cidade.delete(0, END)
+    rg_cpf.delete(0, END)
+    data_nasc.delete(0, END)
+    data_in.delete(0, END)
+    data_des.delete(0, END)
+    pac.delete(0, END)
+    resp.delete(0, END)
+    obs1.delete(0, END)
+    obs2.delete(0, END)
+    comn.commit()
+    conn.close()
+
+#Criando função Ver
+def ver():
+        conn = sqlite3.connect('C:\\Users\\Thomas\\Desktop\\THOMAS\\python\\doacao_CAB.db')
+        c = conn.cursor()
+        c.execute("SELECT *, oid FROM doações2")
+        dados = c.fetchall()
+        #Loop?
+        ver_dados = ''
+        for dado in dados:
+            ver_dados += "Nome:  "+ str(dado[0]) + "   " + "Endereço:  "  + str(dado[1]) + "   " + "Cidade:   " + str(dado[2]) +  "   " + "RG/CPF:   " + str(dado[3]) + "  " + "Data de Nascimento:  " + str(dado[4])  + "  " ## +  "Data de Ingresso:  " +  str(dado[5]) +    "   " + "Data de Desligamento:  "  + str(dado[6]) + " " "RG/CPF:   " + str(dado[7]) + "  " + "Data de Nascimento:  " + str(dado[8]) + "  " + "Id:   " + str(dado[9]) + "  + \n
+             
+        ver_label = Label(janela, text=ver_dados)
+        ver_label.grid(row=10, column=0, columnspan=2)
+        conn.commit()
+        conn.close()
+#Criando caixas de texto
+nome = Entry(janela, width=30)
+nome.grid(row=0, column=1, padx=20)
+end = Entry(janela, width=30)
+end.grid(row=1, column=1, padx=20)
+cidade = Entry(janela, width=30)
+cidade.grid(row=2, column=1, padx=20)
+rg_cpf = Entry(janela, width=30)
+rg_cpf.grid(row=3, column=1, padx=20)
+data_nasc= Entry(janela, width=30)
+data_nasc.grid(row=4, column=1, padx=20)
+data_in = Entry(janela, width=30)
+data_in.grid(row=5, column=1, padx=20)
+data_des = Entry(janela, width=30)
+data_des.grid(row=6, column=1, padx=20)
+pac = Entry(janela, width=30)
+pac.grid(row=7, column=1, padx=20)
+resp = Entry(janela, width=30)
+resp.grid(row=8, column=1, padx=20)
+obs1 = Entry(janela, width=30)
+obs1.grid(row=9, column=1, padx=20)
+obs2 = Entry(janela, width=30)
+obs2.grid(row=10, column=1, padx=20)
+
+
+#Criando rótulos
+nome_label = Label(janela, text = "Nome do assistido:")
+nome_label.grid(row=0, column=0)
+end_label = Label(janela, text = "Endereço:")
+end_label.grid(row=1, column=0)
+cidade_label = Label(janela, text = "Cidade:")
+cidade_label.grid(row=2, column=0)
+rg_cpf_label = Label(janela, text = "RG/CPF:")
+rg_cpf_label.grid(row=3, column=0)
+data_nasc_label = Label(janela, text = "Data de Nascimento:")
+data_nasc_label.grid(row=4, column=0)
+data_in_label = Label(janela, text = "Data de ingresso:")
+data_in_label.grid(row=5, column=0)
+data_des_label = Label(janela, text = "Data de desligamento:")
+data_des_label.grid(row=6, column=0)
+pac_label = Label(janela, text = "Paciente:")
+pac_label.grid(row=7, column=0)
+resp_label = Label(janela, text = "Responsavel pelo cadastro:")
+resp_label.grid(row=8, column=0)
+obs1_label = Label(janela, text = "Obs1:")
+obs1_label.grid(row=9, column=0)
+obs2_label = Label(janela, text = "Obs2:")
+obs2_label.grid(row=10, column=0)
+
+
+
+
+
+
+#Botão para salvar dados
+salvar_btn = Button(janela, text='Salvar no Banco de Dados', command=salvar)
+salvar_btn.grid(row=7, column=0, columnspan=2, pady=10, padx = 10, ipadx=137)
+
+#Botão para visualização dos dados
+ver_btn=Button(janela, text="Visualizar Banco de Dados", command=ver)
+ver_btn.grid(row=8, column=0, columnspan=2, pady=10, padx=10, ipadx=137)
+#Salvar mudanças
+conn.commit()
+
+#Desligar conexão
+conn.close()
+
+janela.mainloop()
